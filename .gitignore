@@ -1,3 +1,7 @@
+# Python cache
+__pycache__
+
 # Big files from requests results
 files/*
-package_list.txt
+*.txt
+*.json
