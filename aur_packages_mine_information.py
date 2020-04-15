@@ -33,34 +33,40 @@ def separate_package_page_information(page: str):
 
 
 #
-def f(packages_list: list):
+def f(package_list: list):
 
 	regex = re.compile(r'<([^>]+?)( [^>]+?)?>([^\s<].*)</\1>')
 	dictionary_keys = ['name' , 'version' , 'votes' , 'popularity' , 'description' , 'maintainer']
+	should_pop = set()
 
-	for i , _ in enumerate(packages_list):
 
-		if len(packages_list[i]) == 6:
-			for j in range(len(packages_list[i])):
-				packages_list[i][j] = regex.findall(packages_list[i][j])[0][2]
+	for i , _ in enumerate(package_list):
+
+		if len(package_list[i]) == 6:
+			for j in range(len(package_list[i])):
+				package_list[i][j] = regex.findall(package_list[i][j])[0][2]
 
 		# Error handling
 		else:
-			if packages_list[i][0].find('package') == -1:
+			if package_list[i][0].find('package') == -1:
 				print("Missing field information on unknown package, ignoring.")
 
 			else:
-				missing_name = regex.findall(packages_list[i][0])[0][2]
+				missing_name = regex.findall(package_list[i][0])[0][2]
 				print(f"Missing field information on the package \"{missing_name}\", ignoring.")
 
-			packages_list.pop(i)
+			should_pop.add(i)
 			continue
 
 
-		packages_list[i] = {key: packages_list[i][j]
+		package_list[i] = {key: package_list[i][j]
 				           for j , key in enumerate(dictionary_keys)}
 
-	return packages_list
+
+	for element in reversed(sorted(should_pop)):
+		package_list.pop(element)
+
+	return package_list
 
 
 
@@ -73,27 +79,19 @@ urls = (f'https://aur.archlinux.org/packages/?PP=250&O={i}'
         for i in range(0 , quantity_of_packages + 255 , 250))
 
 
-pool = ThreadPoolExecutor(max_workers = 30)
-packages_list = []
+pool = ThreadPoolExecutor(max_workers = 25)
+packages_info = []
 
 
 total_size = 0
 for page in pool.map(get_page_content , urls):
 	package_information = separate_package_page_information(page)
 
-	len_before = len(package_information)
-	packages_list.extend(package_information)
-
-	if len(package_information) > len_before:
-		packages[len_before:-1] = f(package_information[len_before:-1])
+	packages_info.extend(f(package_information))
 
 	total_size += len(package_information)
 	print(total_size)
 
 
-# Organized info into list of sets
-packages_info = f(packages_list)
-
-
 with open('aur_packages.json' , 'w') as output_json:
-	output_json.write(json.dumps(packages_info , indent = '\t'))
+	json.dump(packages_info , output_json , indent = '\t')
