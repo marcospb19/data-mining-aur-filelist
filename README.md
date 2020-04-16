@@ -1,16 +1,8 @@
-THIS README IS A UNFINISHED and weird **DRAFT**
-I'm going to sleep now, it'll be finished later
+# Filelist data mining from the Arch User Repository
 
+Project initally  intent of analysing the file types in AUR, I took the chance and made this project where
+I gather information about AUR packages and store it on a .json, for whatever purpouse you want to.
 
-# Arch User Repository filelist
-
-In a salty discussion about what kind of files the users are pushing into AUR, I created this
-project to analyse the file extensions on the whole repository.
-
-This code may be reusable if you're interesting of getting informations from AUR, for this reason,
-the code here has been splitten into several files, depending on your case of use, you can keep
-a file or two and rewrite just a small part to get your custom results. Let's then go to the explanation
-on each file.
 
 
 Sequence:
