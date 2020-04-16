@@ -31,7 +31,6 @@ pool = ThreadPoolExecutor(max_workers = 25)
 json_text = []
 
 
-
 files = 0
 i = 0
 for package_dict in pool.map(get_file_list_from_package , urls):

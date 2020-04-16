@@ -5,7 +5,7 @@ import re
 with open('aur_package_filelist.json' , 'r') as input_file:
 	json_loaded = json.load(input_file)
 
-filelist = set()
+filelist = set() # Remove duplicated
 [filelist.update(pkg_list['filelist']) for pkg_list in json_loaded]
 
 
